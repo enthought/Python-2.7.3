@@ -430,30 +430,18 @@ class SequenceMatcher:
         # "popular" non-junk elements aren't in b2j, which greatly speeds
         # the inner loop above, but also means "the best" match so far
         # doesn't contain any junk *or* popular non-junk elements.
-        while besti > alo and bestj > blo and \
-              not isbjunk(b[bestj-1]) and \
-              a[besti-1] == b[bestj-1]:
-            besti, bestj, bestsize = besti-1, bestj-1, bestsize+1
-        while besti+bestsize < ahi and bestj+bestsize < bhi and \
-              not isbjunk(b[bestj+bestsize]) and \
-              a[besti+bestsize] == b[bestj+bestsize]:
-            bestsize += 1
-
-        # Now that we have a wholly interesting match (albeit possibly
-        # empty!), we may as well suck up the matching junk on each
-        # side of it too.  Can't think of a good reason not to, and it
+        # However, we can at the same time suck up the matching junk elements
+        # on both sides as well. There is no reason not to, and it
         # saves post-processing the (possibly considerable) expense of
         # figuring out what to do with it.  In the case of an empty
         # interesting match, this is clearly the right thing to do,
         # because no other kind of match is possible in the regions.
         while besti > alo and bestj > blo and \
-              isbjunk(b[bestj-1]) and \
               a[besti-1] == b[bestj-1]:
             besti, bestj, bestsize = besti-1, bestj-1, bestsize+1
         while besti+bestsize < ahi and bestj+bestsize < bhi and \
-              isbjunk(b[bestj+bestsize]) and \
               a[besti+bestsize] == b[bestj+bestsize]:
-            bestsize = bestsize + 1
+            bestsize += 1
 
         return Match(besti, bestj, bestsize)
 
